@@ -5,6 +5,8 @@ REST API daftar produk dengan pemisahan route, controller, dan middleware. Mingg
 ## Struktur Proyek
 
 ```
+api-docs/                        # Koleksi Bruno untuk menguji semua endpoint
+images/bruno/                    # Screenshot hasil pengujian di Bruno
 prisma/
 ├── migrations/                  # Riwayat perubahan struktur tabel (file SQL)
 ├── schema.prisma                # Model Product
@@ -84,7 +86,70 @@ Aturan validasi:
 - `id` pada URL harus bilangan bulat positif.
 - Body yang bukan JSON valid dijawab `400 Invalid JSON body`.
 
-## Bukti Pengujian
+## Bukti Pengujian (Bruno)
+
+Koleksi Bruno ada di folder [`api-docs/`](api-docs/). Buka di Bruno lewat **Open Collection**, pilih environment **Local**, lalu jalankan request secara berurutan (atau **Run Collection**). Request **Create Product** menyimpan id produk baru ke variabel `productId`, yang dipakai oleh request PUT dan DELETE.
+
+Lewat CLI:
+
+```bash
+cd api-docs
+npx @usebruno/cli run -r --env Local
+```
+
+### GET
+
+| Skenario | Request | Hasil |
+| --- | --- | --- |
+| Semua produk | `GET /products` | 200 OK |
+| Produk berdasarkan ID | `GET /products/1` | 200 OK |
+| ID tidak ada | `GET /products/999` | 404 Not Found |
+| ID bukan angka | `GET /products/abc` | 400 Bad Request |
+
+![GET semua produk](images/bruno/01-get-all-products.png)
+![GET produk berdasarkan ID](images/bruno/02-get-product-by-id.png)
+![GET produk tidak ditemukan](images/bruno/03-get-product-not-found.png)
+![GET produk dengan ID tidak valid](images/bruno/04-get-product-invalid-id.png)
+
+### POST
+
+| Skenario | Body | Hasil |
+| --- | --- | --- |
+| Produk baru | `{"name":"Penghapus","price":3000}` | 201 Created |
+| Name kosong, price negatif | `{"name":"","price":-5}` | 400 Bad Request |
+| Price berupa string | `{"name":"Spidol","price":"7000"}` | 400 Bad Request |
+| JSON rusak | `{"name":"Spidol",` | 400 Bad Request |
+
+![POST produk baru](images/bruno/05-create-product.png)
+![POST name kosong dan price negatif](images/bruno/06-create-product-empty-fields.png)
+![POST price berupa string](images/bruno/07-create-product-price-string.png)
+![POST JSON rusak](images/bruno/08-create-product-invalid-json.png)
+
+### PUT
+
+| Skenario | Request | Hasil |
+| --- | --- | --- |
+| Ubah produk | `PUT /products/3` `{"name":"Penghapus Besar","price":4500}` | 200 OK |
+| ID tidak ada | `PUT /products/999` | 404 Not Found |
+| Tanpa price | `PUT /products/3` `{"name":"Penghapus Besar"}` | 400 Bad Request |
+
+![PUT ubah produk](images/bruno/09-update-product.png)
+![PUT produk tidak ditemukan](images/bruno/10-update-product-not-found.png)
+![PUT tanpa price](images/bruno/11-update-product-missing-price.png)
+
+### DELETE
+
+| Skenario | Request | Hasil |
+| --- | --- | --- |
+| Hapus produk | `DELETE /products/3` | 200 OK |
+| Hapus lagi produk yang sama | `DELETE /products/3` | 404 Not Found |
+| ID bukan angka | `DELETE /products/abc` | 400 Bad Request |
+
+![DELETE produk](images/bruno/12-delete-product.png)
+![DELETE produk yang sudah dihapus](images/bruno/13-delete-product-already-deleted.png)
+![DELETE produk dengan ID tidak valid](images/bruno/14-delete-product-invalid-id.png)
+
+## Bukti Pengujian (curl dan isi database)
 
 Pengujian dengan `curl` setelah `npm run start`. Isi tabel diperiksa dengan:
 
