@@ -1,0 +1,22 @@
+meta {
+  name: Create Product Price String
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/products
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Spidol",
+    "price": "7000"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

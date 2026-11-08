@@ -1,0 +1,22 @@
+meta {
+  name: Create Product Empty Fields
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/products
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "",
+    "price": -5
+  }
+}
+
+assert {
+  res.status: eq 400
+}

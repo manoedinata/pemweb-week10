@@ -1,0 +1,21 @@
+meta {
+  name: Update Product Missing Price
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/products/{{productId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Penghapus Besar"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

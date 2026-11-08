@@ -1,0 +1,22 @@
+meta {
+  name: Update Product
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/products/{{productId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Penghapus Besar",
+    "price": 4500
+  }
+}
+
+assert {
+  res.status: eq 200
+}

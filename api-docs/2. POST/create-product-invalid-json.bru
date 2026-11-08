@@ -1,0 +1,23 @@
+meta {
+  name: Create Product Invalid JSON
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/products
+  body: text
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:text {
+  {"name":"Spidol",
+}
+
+assert {
+  res.status: eq 400
+}
